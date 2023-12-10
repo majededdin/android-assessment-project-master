@@ -7,9 +7,10 @@ import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
 import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
@@ -17,11 +18,13 @@ import dagger.android.HasAndroidInjector;
 
 public class MovieListActivity extends AppCompatActivity implements HasAndroidInjector {
     private static final String IS_SEARCH_VIEW_ICONIFIED = "is_search_view_iconified";
+    private static final String SEARCH_TYPED_TEXT = "search_view_query";
 
     @Inject
     DispatchingAndroidInjector<Object> dispatchingActivityInjector;
     private SearchView searchView;
     private boolean searchViewExpanded = true;
+    private String searchTypedText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class MovieListActivity extends AppCompatActivity implements HasAndroidIn
                     .commit();
         } else {
             searchViewExpanded = savedInstanceState.getBoolean(IS_SEARCH_VIEW_ICONIFIED);
+            searchTypedText = savedInstanceState.getString(SEARCH_TYPED_TEXT, "");
         }
     }
 
@@ -48,6 +52,8 @@ public class MovieListActivity extends AppCompatActivity implements HasAndroidIn
         searchView = (SearchView) menuItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         searchView.setIconified(searchViewExpanded);
+        searchView.setQuery(searchTypedText, false);
+        searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -69,6 +75,18 @@ public class MovieListActivity extends AppCompatActivity implements HasAndroidIn
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_SEARCH_VIEW_ICONIFIED, searchView.isIconified());
+        outState.putString(SEARCH_TYPED_TEXT, searchView.getQuery().toString());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        clearFocus();
+    }
+
+    private void clearFocus() {
+        if (searchView != null)
+            searchView.clearFocus();
     }
 
     @Override
