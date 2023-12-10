@@ -67,6 +67,11 @@ public class MovieListActivity extends AppCompatActivity implements HasAndroidIn
                 return false;
             }
         });
+        searchView.setOnCloseListener(() -> {
+            ListFragment listFragment = (ListFragment) getSupportFragmentManager().findFragmentByTag(ListFragment.TAG);
+            listFragment.submitSearchQuery("interview");
+            return false;
+        });
 
         return true;
     }
