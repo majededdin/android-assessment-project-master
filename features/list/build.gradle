@@ -34,6 +34,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.8.0'
     //glide
     implementation "com.github.bumptech.glide:glide:$rootProject.glide"
+    implementation project(path: ':features:detail')
     kapt "com.github.bumptech.glide:compiler:$rootProject.glide"
 
     //dagger
