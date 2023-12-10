@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.vp.detail.DetailActivity;
@@ -44,6 +45,8 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
     private TextView errorTextView;
     private String currentQuery = "Interview";
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,7 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
         viewAnimator = view.findViewById(R.id.viewAnimator);
         progressBar = view.findViewById(R.id.progressBar);
         errorTextView = view.findViewById(R.id.errorText);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
         if (savedInstanceState != null) {
             currentQuery = savedInstanceState.getString(CURRENT_QUERY);
@@ -78,6 +82,10 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
         });
         listViewModel.searchMoviesByTitle(currentQuery, 1);
         showProgressBar();
+
+        swipeRefreshLayout.setOnRefreshListener(
+                () -> listViewModel.searchMoviesByTitle(currentQuery, 1)
+        );
     }
 
     private void initBottomNavigation(@NonNull View view) {
@@ -119,19 +127,26 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
         viewAnimator.setDisplayedChild(viewAnimator.indexOfChild(errorTextView));
     }
 
+    private void hideSwipeRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
     private void handleResult(@NonNull ListAdapter listAdapter, @NonNull SearchResult searchResult) {
         switch (searchResult.getListState()) {
             case LOADED: {
                 setItemsData(listAdapter, searchResult);
                 showList();
+                hideSwipeRefresh();
                 break;
             }
             case IN_PROGRESS: {
                 showProgressBar();
+                hideSwipeRefresh();
                 break;
             }
             default: {
                 showError();
+                hideSwipeRefresh();
             }
         }
         gridPagingScrollListener.markLoading(false);
