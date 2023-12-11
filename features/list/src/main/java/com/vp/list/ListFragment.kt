@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -36,6 +38,7 @@ class ListFragment : Fragment(), LoadMoreItemsListener, ListAdapter.OnItemClickL
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarLoading: ProgressBar
     private lateinit var errorTextView: TextView
 
     private var currentQuery: String = "Interview"
@@ -58,6 +61,7 @@ class ListFragment : Fragment(), LoadMoreItemsListener, ListAdapter.OnItemClickL
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         viewAnimator = view.findViewById(R.id.viewAnimator)
         progressBar = view.findViewById(R.id.progressBar)
+        progressBarLoading = view.findViewById(R.id.progressBarLoading)
         errorTextView = view.findViewById(R.id.errorText)
         savedInstanceState?.getString(CURRENT_QUERY)?.let {
             currentQuery = it
@@ -132,7 +136,6 @@ class ListFragment : Fragment(), LoadMoreItemsListener, ListAdapter.OnItemClickL
     }
 
     private fun handleResult(listAdapter: ListAdapter, searchResult: SearchResult) {
-        hideSwipeRefresh()
         when (searchResult) {
             SearchResult.Error -> {
                 showError()
@@ -144,8 +147,9 @@ class ListFragment : Fragment(), LoadMoreItemsListener, ListAdapter.OnItemClickL
                 showList()
             }
         }
+        progressBarLoading.visibility = GONE
         gridPagingScrollListener.markLoading(false)
-        swipeRefreshLayout.isRefreshing = false
+        hideSwipeRefresh()
     }
 
     private fun setItemsData(listAdapter: ListAdapter, searchResult: SearchResult) {
@@ -161,6 +165,7 @@ class ListFragment : Fragment(), LoadMoreItemsListener, ListAdapter.OnItemClickL
     }
 
     override fun loadMoreItems(page: Int) {
+        progressBarLoading.visibility = VISIBLE
         gridPagingScrollListener.markLoading(true)
         listViewModel.searchMoviesByTitle(currentQuery, page)
     }
