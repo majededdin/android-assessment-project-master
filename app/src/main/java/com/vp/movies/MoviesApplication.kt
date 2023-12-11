@@ -14,9 +14,9 @@ class MoviesApplication : Application(), HasAndroidInjector {
     override fun onCreate() {
         super.onCreate()
         DaggerAppComponent.builder()
-                .application(this)
-                .build()
-                .inject(this)
+            .application(this)
+            .build()
+            .inject(this)
     }
 
     override fun androidInjector(): AndroidInjector<Any> {
