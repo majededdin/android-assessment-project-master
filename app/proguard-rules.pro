@@ -23,6 +23,15 @@
 # Retrofit does reflection on generic parameters and InnerClass is required to use Signature.
 -keepattributes Signature, InnerClasses
 
+# For App Models
+-keep class com.vp.detail.model.** { *; }
+
+-keep class com.vp.detail.** { *; }
+
+#--------------------------------------------------Retorfit-----------------------------------------
+# Retrofit does reflection on method and parameter annotations.
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+
 # Retain service method parameters when optimizing.
 -keepclassmembers,allowshrinking,allowobfuscation interface * {
     @retrofit2.http.* <methods>;
