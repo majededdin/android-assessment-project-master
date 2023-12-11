@@ -84,7 +84,10 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
         showProgressBar();
 
         swipeRefreshLayout.setOnRefreshListener(
-                () -> listViewModel.searchMoviesByTitle(currentQuery, 1)
+                () -> {
+                    listAdapter.clearItems();
+                    listViewModel.searchMoviesByTitle(currentQuery, 1);
+                }
         );
     }
 
