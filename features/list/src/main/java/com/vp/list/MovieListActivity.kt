@@ -1,7 +1,6 @@
 package com.vp.list
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Menu
 import android.view.inputmethod.EditorInfo
 import android.widget.SearchView
@@ -63,7 +62,7 @@ class MovieListActivity : DaggerAppCompatActivity() {
         return true
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(IS_SEARCH_VIEW_ICONIFIED, searchView!!.isIconified)
         outState.putString(SEARCH_TYPED_TEXT, searchView!!.query.toString())
